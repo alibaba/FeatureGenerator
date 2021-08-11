@@ -77,11 +77,13 @@ inline bool FeatureFormatter::getInvalidValue(int64_t &value) {
     return true;
 }
 
+#if defined(__OSX__)
 template <>
 inline bool FeatureFormatter::getInvalidValue(long long int &value) {
     value = std::numeric_limits<long long int>::max();
     return true;
 }
+#endif
 
 template <>
 inline bool FeatureFormatter::getInvalidValue(double &value) {
@@ -168,6 +170,7 @@ inline void FeatureFormatter::fillFeatureToBuffer(
     FastInt64ToBufferLeft(value, buffer);
 }
 
+#if defined(__OSX__)
 template <>
 inline void FeatureFormatter::fillFeatureToBuffer(
         const long long int &value, FeatureBuffer &buffer)
@@ -181,6 +184,7 @@ inline void FeatureFormatter::fillFeatureToBuffer(
 {
     FastInt64ToBufferLeft((uint64_t)value, buffer);
 }
+#endif
 
 template <>
 inline void FeatureFormatter::fillFeatureToBuffer(

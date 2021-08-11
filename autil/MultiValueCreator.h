@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "autil/MultiValueFormatter.h"
-#include "autil/CountedMultiValueType.h"
 #include "autil/mem_pool/Pool.h"
 
 namespace autil {
@@ -29,9 +28,6 @@ public:
     static char* createMultiStringBuffer(const std::vector<ConstString>& strVec,
                                          mem_pool::PoolBase* pool = NULL);
 
-    template<typename T>
-    static MultiValueType<T> convertToMultiValue(CountedMultiValueType<T> &value, mem_pool::PoolBase *pool = NULL);
-
     template <typename T>
     static typename std::enable_if<MULTI_VALUE_FORMAT_SUPPORTED(T), char*>::type
     createMultiValueBuffer(const std::vector<T>& values,
@@ -52,22 +48,6 @@ public:
 
     static char* createNullMultiValueBuffer(mem_pool::PoolBase* pool = NULL);
 };
-
-template<typename T>
-inline MultiValueType<T> MultiValueCreator::convertToMultiValue(CountedMultiValueType<T> &value, mem_pool::PoolBase *pool) {
-    if (!pool) {
-        return MultiValueType<T>();
-    }
-    char* buffer = NULL;
-    if (value.isNull()) {
-        buffer = createNullMultiValueBuffer(pool);
-    } else if (value.size() != 0) {
-        buffer = createMultiValueBuffer(
-                value.data(), (size_t)value.size(), pool);
-    }
-    MultiValueType<T> mt(buffer);
-    return mt;
-}
 
 template <typename T>
 inline typename std::enable_if<MULTI_VALUE_FORMAT_SUPPORTED(T), char*>::type

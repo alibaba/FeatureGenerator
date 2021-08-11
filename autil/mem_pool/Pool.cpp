@@ -40,7 +40,7 @@ bool Pool::isInPool(const void *ptr) const {
 
 void* Pool::allocate(size_t numBytes)
 {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     return allocateUnsafe(numBytes);
 }
 
@@ -52,9 +52,9 @@ void* Pool::allocateUnsafe(size_t numBytes) {
         MemoryChunk* chunk = _allocPolicy->allocate(allocSize);
         if (!chunk)
         {
-            AUTIL_LOG(ERROR, "Allocate too large memory chunk: %ld, "
-                   "max available chunk size: %ld",
-                   (int64_t)numBytes, (int64_t)_allocPolicy->getAvailableChunkSize());
+            AUTIL_LOG(ERROR, "Allocate too large memory chunk: %lu, "
+                   "max available chunk size: %lu",
+                   numBytes, _allocPolicy->getAvailableChunkSize());
             return NULL;
         }
         _memChunk = chunk;
@@ -65,7 +65,7 @@ void* Pool::allocateUnsafe(size_t numBytes) {
 }
 
 void Pool::clear() {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     _allocPolicy->clear();
 }
 

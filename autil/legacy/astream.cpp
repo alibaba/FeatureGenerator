@@ -58,7 +58,7 @@ namespace autil{ namespace legacy
     uint32_t a_Ostream::WriteVarint(const uint64_t udata)
     {
         char tmp[10];
-        if (udata <= __UINT64_C(0x7ffffffff))
+        if (udata <= 0x7ffffffff)
         {
             int i = 0;
             PUTVARINT32_HELPER(tmp, udata)
@@ -134,7 +134,7 @@ namespace autil{ namespace legacy
     uint32_t a_OstreamBuffer::WriteVarint(const uint64_t udata)
     {
         char tmp[10];
-        if (udata <= __UINT64_C(0x7ffffffff))
+        if (udata <= 0x7ffffffff)
         {
             PUTVARINT32_AND_RETURN
         }

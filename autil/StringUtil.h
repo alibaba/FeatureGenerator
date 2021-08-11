@@ -14,8 +14,6 @@
 #include <utility>
 #include <vector>
 
-#include "autil/ShortString.h"
-
 namespace autil {
 
 class StringUtil
@@ -36,7 +34,6 @@ public:
     static void split(std::vector<std::string> &vec, const std::string& text,
                       const std::string &sepStr, bool ignoreEmpty = true);
     static bool isSpace(const std::string& text);
-    static bool isSpace(const ShortString& text);
 
     static void toUpperCase(char *str);
     static void toUpperCase(const char *str, std::string &retStr);
@@ -334,10 +331,7 @@ inline std::string StringUtil::toString<int8_t>(const int8_t &x) {
 template<>
 inline std::string StringUtil::toString<uint8_t>(const uint8_t &x) {
     char buf[8] = {0,};
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-truncation="
     snprintf(buf, sizeof(buf), "%u", x);
-#pragma GCC diagnostic pop
     std::string res(buf);
     return res;
 }
@@ -377,15 +371,16 @@ inline std::string StringUtil::toString<uint32_t>(const uint32_t &x) {
 template<>
 inline std::string StringUtil::toString<int64_t>(const int64_t &x) {
     char buf[64] = {0,};
-    snprintf(buf, sizeof(buf), "%ld", x);
+    snprintf(buf, sizeof(buf), "%lld", x);
     std::string res(buf);
     return res;
 }
 
+#if defined(__OSX__)
 template<>
 inline std::string StringUtil::toString<long long>(const long long &x) {
     char buf[64] = {0,};
-    snprintf(buf, sizeof(buf), "%ld", int64_t(x));
+    snprintf(buf, sizeof(buf), "%lld", int64_t(x));
     std::string res(buf);
     return res;
 }
@@ -393,15 +388,16 @@ inline std::string StringUtil::toString<long long>(const long long &x) {
 template<>
 inline std::string StringUtil::toString<unsigned long long>(const unsigned long long &x) {
     char buf[64] = {0,};
-    snprintf(buf, sizeof(buf), "%lu", uint64_t(x));
+    snprintf(buf, sizeof(buf), "%llu", uint64_t(x));
     std::string res(buf);
     return res;
 }
+#endif
 
 template<>
 inline std::string StringUtil::toString<uint64_t>(const uint64_t &x) {
     char buf[64] = {0,};
-    snprintf(buf, sizeof(buf), "%lu", x);
+    snprintf(buf, sizeof(buf), "%llu", x);
     std::string res(buf);
     return res;
 }

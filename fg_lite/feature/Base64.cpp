@@ -117,12 +117,12 @@ static int DecodeInternal(unsigned char *dst, const int &dsize,
     }
 
     if (len > 1) {
-        *d++ = (u_char) (basis[s[0]] << 2 | basis[s[1]] >> 4);
+        *d++ = (unsigned char) (basis[s[0]] << 2 | basis[s[1]] >> 4);
         decode_len += 1;
     }
 
     if (len > 2) {
-        *d++ = (u_char) (basis[s[1]] << 4 | basis[s[2]] >> 2);
+        *d++ = (unsigned char) (basis[s[1]] << 4 | basis[s[2]] >> 2);
         decode_len += 1;
     }
 

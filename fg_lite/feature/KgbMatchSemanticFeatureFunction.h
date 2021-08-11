@@ -154,7 +154,7 @@ public:
                 ConvertToUint64(iTermList->get(i, j), curTerm);
                 auto idx = GetTermIndex(curTerm);
                 if (idx > CLASS_MAX_SIZE) {
-                    AUTIL_LOG(ERROR, "Invalid term list value %ld, index %ld > %d", curTerm, idx, CLASS_MAX_SIZE);
+                    AUTIL_LOG(ERROR, "Invalid term list value %llu, index %llu > %d", curTerm, idx, CLASS_MAX_SIZE);
                     continue;
                 } else {
                     item_term_list[idx].push_back(GetTermValue(curTerm));
@@ -173,7 +173,7 @@ public:
             for(auto val: query_term_list) {
                 auto cls = get_term_cls(val);
                 if (cls > CLASS_MAX_SIZE) {
-                    AUTIL_LOG(ERROR, "Invalid term value %ld, cls(%d) gt %d", val, (int)cls, (int)CLASS_MAX_SIZE);
+                    AUTIL_LOG(ERROR, "Invalid term value %llu, cls(%d) gt %d", val, (int)cls, (int)CLASS_MAX_SIZE);
                 }
                 auto hit = std::binary_search(item_term_list[cls].begin(), item_term_list[cls].end(), (uint32_t)(val & 0xFFFFFFFFULL));
                 if (!_asBytes) {

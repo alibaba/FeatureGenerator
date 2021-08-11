@@ -10,8 +10,8 @@
 #include <string.h>
 #include <time.h>
 #include <algorithm>
+#include <mutex>
 
-#include "autil/Lock.h"
 #include "autil/TimeUtility.h"
 
 using namespace std;
@@ -39,7 +39,7 @@ public:
     stringstream* getStringStream() {
         stringstream* ret = NULL;
         {
-            ScopedLock lock(_lock);
+	    unique_lock<mutex> lock(_lock);
             if (!_ssVec.empty()) {
                 ret = _ssVec.back();
                 _ssVec.pop_back();
@@ -52,11 +52,11 @@ public:
     }
     void putStringStream(stringstream* ss) {
         ss->clear();
-        ScopedLock lock(_lock);
+	unique_lock<mutex> lock(_lock);
         _ssVec.push_back(ss);
     }
 private:
-    ThreadMutex _lock;
+    mutex _lock;
     vector<stringstream *> _ssVec;
 };
 
@@ -64,12 +64,12 @@ static const size_t POOL_SIZE = 127;
 static StringStreamPool sPool[POOL_SIZE];
 
 stringstream* StringUtil::getStringStream() {
-    size_t offset = pthread_self() % POOL_SIZE;
+    size_t offset = (int64_t) pthread_self() % POOL_SIZE;
     return sPool[offset].getStringStream();
 }
 
 void StringUtil::putStringStream(stringstream* ss) {
-    size_t offset = pthread_self() % POOL_SIZE;
+    size_t offset = (int64_t) pthread_self() % POOL_SIZE;
     sPool[offset].putStringStream(ss);
 }
 
@@ -159,18 +159,6 @@ bool StringUtil::isSpace(const string& text) {
     if (text.length() > 1) {
         return false;
     }
-    return isspace(text[0]);
-}
-
-bool StringUtil::isSpace(const ShortString& text) {
-    if (text == "　") {
-        return true;
-    }
-
-    if (text.length() > 1) {
-        return false;
-    }
-
     return isspace(text[0]);
 }
 
@@ -454,7 +442,7 @@ bool StringUtil::strToDouble(const char* str, double& value)
 void StringUtil::uint64ToHexStr(uint64_t value, char* hexStr, int len)
 {
     assert(len > 16);
-    snprintf(hexStr, len, "%016lx", value);
+    snprintf(hexStr, len, "%016llx", value);
 }
 
 int8_t StringUtil::strToInt8WithDefault(const char* str, int8_t defaultValue)

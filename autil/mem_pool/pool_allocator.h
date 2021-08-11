@@ -1,6 +1,5 @@
 #include <cstddef>
 #include <exception>
-#include <bits/functexcept.h>
 #include <new>
 
 #include "autil/mem_pool/PoolBase.h"

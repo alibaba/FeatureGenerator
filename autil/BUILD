@@ -110,26 +110,9 @@ cc_library(
 )
 
 cc_library(
-    name = "lock",
-    srcs = [
-        "Lock.cpp",
-    ],
-    hdrs = [
-        "Lock.h",
-    ],
-    deps = [
-        ":common_macros",
-        ":time",
-        ":log",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-cc_library(
     name = "mem_pool_base",
     srcs = [
         "mem_pool/Pool.cpp",
-        "mem_pool/RecyclePool.cpp",
         "mem_pool/SimpleAllocatePolicy.cpp",
         "mem_pool/SimpleAllocator.cpp",
     ],
@@ -139,15 +122,12 @@ cc_library(
         "mem_pool/MemoryChunk.h",
         "mem_pool/Pool.h",
         "mem_pool/PoolBase.h",
-        "mem_pool/RecyclePool.h",
         "mem_pool/SimpleAllocatePolicy.h",
         "mem_pool/SimpleAllocator.h",
-        "mem_pool/SubPoolAllocator.h",
-        "mem_pool/pool_allocator.h",
+        "mem_pool/pool_allocator.h"
     ],
     deps = [
         ":log",
-        ":lock",
     ],
     visibility = ["//visibility:public"],
     alwayslink = True,
@@ -158,23 +138,18 @@ cc_library(
     name = "string_base",
     srcs = [
         "StringUtil.cpp",
-        "ShortString.cpp",
         "ConstString.cpp",
         "StringTokenizer.cpp",
         "FormatInt.cpp",
     ],
     hdrs = [
         "StringUtil.h",
-        "ShortString.h",
         "ConstString.h",
         "StringTokenizer.h",
         "FormatInt.h",
     ],
     deps = [
         ":log",
-    ],
-    private_deps = [
-        ":lock",
     ],
     alwayslink = True,
     visibility = ["//visibility:public"],
@@ -185,13 +160,11 @@ cc_library(
     srcs = [
         "LongHashValue.cpp",
         "MultiValueType.cpp",
-        "CountedMultiValueType.cpp",
     ],
     hdrs = [
         "LongHashValue.h",
         "MultiValueFormatter.h",
         "MultiValueType.h",
-        "CountedMultiValueType.h",
     ],
     deps = [
         ":common_macros",
@@ -208,13 +181,10 @@ cc_library(
     ],
     hdrs = [
         "MultiValueCreator.h",
-        "MultiValueWriter.h",
     ],
     deps = [
         ":mem_pool_base",
         ":type_base",
-    ],
-    private_deps = [
         ":string_base",
         ":exception",
     ],

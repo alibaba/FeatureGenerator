@@ -1,8 +1,8 @@
 #pragma once
 
 #include <stdlib.h>
+#include <mutex>
 
-#include "autil/Lock.h"
 #include "autil/Log.h"
 #include "autil/mem_pool/AllocatePolicy.h"
 #include "autil/mem_pool/MemoryChunk.h"
@@ -92,7 +92,7 @@ public:
     static size_t alignBytes(size_t numBytes, size_t alignSize);
 
 protected:
-    mutable SpinLock _mutex;
+    mutable std::mutex _mutex;
     size_t _alignSize; ///Alignment length
     MemoryChunk* _memChunk;  ///Memory chunk
     size_t _allocSize;// size of allocated memory from this pool
@@ -135,7 +135,7 @@ inline void *Pool::allocateAlign(size_t numBytes, size_t alignSize) {
 
 inline void Pool::release()
 {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     _allocPolicy->release();
     _allocSize = 0;
     _memChunk = &(Pool::DUMMY_CHUNK);
@@ -143,7 +143,7 @@ inline void Pool::release()
 
 inline size_t Pool::reset()
 {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     return resetUnsafe();
 }
 
@@ -156,7 +156,7 @@ inline size_t Pool::resetUnsafe() {
 
 inline size_t Pool::getUsedBytes() const
 {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     size_t allocBytes = _allocPolicy->getUsedBytes();
     allocBytes -= _memChunk->getFreeSize();
     return allocBytes;
@@ -164,19 +164,19 @@ inline size_t Pool::getUsedBytes() const
 
 inline size_t Pool::getAllocatedSize() const
 {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     return _allocSize;
 }
 
 inline size_t Pool::getTotalBytes() const
 {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     return _allocPolicy->getTotalBytes();
 }
 
 inline size_t Pool::getAvailableChunkSize() const
 {
-    ScopedSpinLock lock(_mutex);
+    std::unique_lock<std::mutex> lock(_mutex);
     return _allocPolicy->getAvailableChunkSize();
 }
 
