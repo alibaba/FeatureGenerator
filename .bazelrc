@@ -1,0 +1,4 @@
+build --copt=-Wall
+build --copt=-Werror
+build --cxxopt=-std=c++14
+
