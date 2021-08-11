@@ -212,7 +212,7 @@ cc_test(
     deps = [
         ":fg_lite",
         ":fg_lite_test_helper",
-        "@com_google_googletest//:gtest",
+        "@gmock_archive//:gtest",
     ],
     copts = ["-march=native", "-mavx512f", "-mavx512vl", "-mavx512bw"],
 )
