@@ -1,7 +1,0 @@
-build --copt=-Wall
-build --copt=-Werror
-build --copt=-march=native
-build --copt=-g
-build --strip=never
-build --cxxopt=-std=c++14
-
